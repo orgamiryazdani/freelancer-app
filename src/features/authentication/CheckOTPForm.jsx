@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { HiArrowRight } from "react-icons/hi";
 import { CiEdit } from "react-icons/ci";
+import Loading from "../../ui/Loading";
 
 const RESEND_TIME = 90;
 
@@ -14,7 +15,7 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
     const [time, setTime] = useState(RESEND_TIME);
     const navigate = useNavigate()
 
-    const { mutateAsync } = useMutation({
+    const { isPending, mutateAsync } = useMutation({
         mutationFn: checkOtp
     });
 
@@ -23,12 +24,14 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
         try {
             const { message, user } = await mutateAsync({ phoneNumber, otp })
             toast.success(message)
-            if (user.isActive) {
-                if (user.role === "OWNER") navigate("/owner");
-                if (user.role === "FREELANCER") navigate("/freelancer");
-            } else {
-                navigate("/complete-profile")
+            if (!user.isActive) return navigate("/complete-profile")
+            if (user.status !== 2) {
+                navigate("/");
+                toast("پروفایل شما در انتظار تایید است", { icon: "👏" });
+                return;
             }
+            if (user.role === "OWNER") return navigate("/owner");
+            if (user.role === "FREELANCER") navigate("/freelancer");
         } catch (error) {
             toast.error(error?.response?.data?.message)
         }
@@ -79,7 +82,11 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
                         borderRadius: "0.5rem"
                     }}
                 />
-                <button className="btn btn--primary w-full">تایید</button>
+                <div>
+                    {isPending ? <Loading /> :
+                        <button type="submit" className="btn btn--primary w-full">تایید</button>
+                    }
+                </div>
             </form>
         </div>
     )
