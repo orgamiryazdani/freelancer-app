@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { removeProjectApi } from "../../services/projectService";
+import { createProjectApi } from "../../services/projectService";
 import toast from "react-hot-toast";
 
-export default function useRemoveProject() {
+export default function useCreateProject() {
     const queryClient = useQueryClient();
-    const { mutate: removeProject, isPending: isDeleting } = useMutation({
-        mutationFn: removeProjectApi,
+
+    const { isPending: isCreating, mutate: createProject } = useMutation({
+        mutationFn: createProjectApi,
         onSuccess: (data) => {
             toast.success(data?.message);
             queryClient.invalidateQueries({
@@ -14,5 +15,6 @@ export default function useRemoveProject() {
         },
         onError: (err) => toast.error(err?.response?.data?.message),
     });
-    return { removeProject, isDeleting }
+
+    return { isCreating, createProject }
 }
