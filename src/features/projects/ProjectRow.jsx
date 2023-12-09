@@ -8,6 +8,7 @@ import { HiOutlineTrash } from "react-icons/hi";
 import { TbPencilMinus } from "react-icons/tb";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import useRemoveProject from "./useRemoveProjects";
+import CreateProjectForm from "./CreateProjectForm";
 
 function ProjectRow({ project, index }) {
     const [isEditOpen, setIsEditOpen] = useState(false);
@@ -46,7 +47,9 @@ function ProjectRow({ project, index }) {
                         <button onClick={() => setIsEditOpen(true)}>
                             <TbPencilMinus className="w-5 h-5 text-primary-900" />
                         </button>
-                        <Modal title={`ویرایش ${project.title}`} open={isEditOpen} onClose={() => setIsEditOpen(false)}>this is modal ...</Modal>
+                        <Modal title={`ویرایش ${project.title}`} open={isEditOpen} onClose={() => setIsEditOpen(false)}>
+                            <CreateProjectForm projectToEdit={project} onClose={() => setIsEditOpen(false)} />
+                        </Modal>
                     </>
                     <>
                         <button onClick={() => setIsDeleteOpen(true)}>
