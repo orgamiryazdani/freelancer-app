@@ -29,7 +29,7 @@ function CreateProjectForm({ onClose, projectToEdit = {} }) {
     const [date, setDate] = useState(new Date(deadline || ""));
     const { categories } = useCategories()
     const { isCreating, createProject } = useCreateProject();
-    const { editProject, isEditing } = useEditProject();
+    const { editProject } = useEditProject();
 
     const onSubmit = (data) => {
         const newProject = { ...data, deadline: new Date(date).toISOString(), tags }
